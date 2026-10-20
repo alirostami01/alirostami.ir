@@ -68,6 +68,12 @@ PAGES = [
                 "primary": True,
             },
             {
+                "label": "مطالعهٔ آنلاین کتاب",
+                "href": "/aima-4e/",
+                "icon": "fas fa-book-reader",
+                "primary": True,
+            },
+            {
                 "label": "دانلود کامل کتاب (PDF)",
                 "href": "https://github.com/alirostami01/aima-4e-persian/raw/main/pdf/aima-4e-persian.pdf",
                 "icon": "fas fa-file-pdf",
