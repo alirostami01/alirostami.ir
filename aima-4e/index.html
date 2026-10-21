@@ -4,6 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
+    <script>
+        // Prevent iframe recursion: index.html should never be inside an iframe!
+        if (window.self !== window.top) {
+            window.top.location = window.location.href;
+        }
+    </script>
     <title>هوش مصنوعی: رویکردی نوین (AIMA 4e) — مطالعه آنلاین با فهرست و سایدبار</title>
     <meta name="Description" content="نسخهٔ وب و مطالعهٔ آنلاین ترجمهٔ فارسی کتاب هوش مصنوعی: یک رویکرد مدرن (ویرایش چهارم) اثر استوارت راسل و پیتر نورویگ با سایدبار، فهرست کامل فصول و زیرفصل‌ها.">
     <meta property="og:title" content="هوش مصنوعی: رویکردی نوین (AIMA 4e) — مطالعه آنلاین کتاب">
@@ -911,11 +917,28 @@
     frame.addEventListener('load', () => {
         syncThemeToFrame();
         try {
+            const doc = frame.contentDocument;
+            if (doc) {
+                // Always remove or hide #aima-top-nav inside the reader frame
+                const nav = doc.getElementById('aima-top-nav');
+                if (nav) nav.style.display = 'none';
+
+                // Intercept any links pointing to index.html to break out of iframe
+                doc.querySelectorAll('a[href*="index.html"]').forEach(a => {
+                    a.setAttribute('target', '_top');
+                });
+            }
             const loc = frame.contentWindow.location;
             const pathname = loc.pathname;
             const currentFile = decodeURIComponent(pathname.substring(pathname.lastIndexOf('/') + 1));
             const currentHash = loc.hash;
             
+            // Breakout if index.html was accidentally loaded inside frame
+            if (currentFile === 'index.html' || currentFile === '') {
+                window.top.location = 'index.html';
+                return;
+            }
+
             const idx = CHAPTERS.findIndex(c => c.filename === currentFile);
             if (idx !== -1) {
                 updateActiveState(idx, currentHash);

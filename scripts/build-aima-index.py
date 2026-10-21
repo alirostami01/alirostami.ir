@@ -117,6 +117,12 @@ def generate_index_html(chapters):
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
+    <script>
+        // Prevent iframe recursion: index.html should never be inside an iframe!
+        if (window.self !== window.top) {{
+            window.top.location = window.location.href;
+        }}
+    </script>
     <title>هوش مصنوعی: رویکردی نوین (AIMA 4e) — مطالعه آنلاین با فهرست و سایدبار</title>
     <meta name="Description" content="نسخهٔ وب و مطالعهٔ آنلاین ترجمهٔ فارسی کتاب هوش مصنوعی: یک رویکرد مدرن (ویرایش چهارم) اثر استوارت راسل و پیتر نورویگ با سایدبار، فهرست کامل فصول و زیرفصل‌ها.">
     <meta property="og:title" content="هوش مصنوعی: رویکردی نوین (AIMA 4e) — مطالعه آنلاین کتاب">
@@ -677,11 +683,28 @@ def generate_index_html(chapters):
     frame.addEventListener('load', () => {{
         syncThemeToFrame();
         try {{
+            const doc = frame.contentDocument;
+            if (doc) {{
+                // Always remove or hide #aima-top-nav inside the reader frame
+                const nav = doc.getElementById('aima-top-nav');
+                if (nav) nav.style.display = 'none';
+
+                // Intercept any links pointing to index.html to break out of iframe
+                doc.querySelectorAll('a[href*="index.html"]').forEach(a => {{
+                    a.setAttribute('target', '_top');
+                }});
+            }}
             const loc = frame.contentWindow.location;
             const pathname = loc.pathname;
             const currentFile = decodeURIComponent(pathname.substring(pathname.lastIndexOf('/') + 1));
             const currentHash = loc.hash;
             
+            // Breakout if index.html was accidentally loaded inside frame
+            if (currentFile === 'index.html' || currentFile === '') {{
+                window.top.location = 'index.html';
+                return;
+            }}
+
             const idx = CHAPTERS.findIndex(c => c.filename === currentFile);
             if (idx !== -1) {{
                 updateActiveState(idx, currentHash);
@@ -877,30 +900,44 @@ def generate_index_html(chapters):
 
 
 def inject_chapter_helpers(chapters):
-    """Add a discreet top navigation pill to each chapter HTML file for return to sidebar."""
-    nav_banner_html = """
-<div id="aima-top-nav" style="background:#24344d;color:#fff;padding:8px 14px;border-radius:10px;margin:0 0 20px;display:flex;align-items:center;justify-content:space-between;font-size:13px;flex-wrap:wrap;gap:8px;font-family:Tahoma,sans-serif;">
-  <div style="display:flex;align-items:center;gap:8px;">
-    <span style="background:#b8923a;color:#1c2430;padding:2px 8px;border-radius:6px;font-weight:bold;">AIMA 4e</span>
-    <span>هوش مصنوعی: رویکردی نوین (ترجمهٔ فارسی)</span>
-  </div>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <a href="index.html" style="color:#fff;text-decoration:none;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:6px;">📖 فهرست و سایدبار کتاب</a>
-    <a href="/aima-4e-persian/" style="color:#f4e7c4;text-decoration:none;">معرفی پروژه</a>
-  </div>
-</div>
-"""
+    """Add a standalone floating pill to chapter HTML files that only appears when NOT inside an iframe."""
     for ch in chapters:
         fpath = AIMA_DIR / ch["filename"]
         with open(fpath, "r", encoding="utf-8") as fp:
             content = fp.read()
         
-        # Only inject if not already injected
-        if 'id="aima-top-nav"' not in content:
-            # Place right after <div class="page">
-            updated = re.sub(r'(<div class="page">)', r'\1\n' + nav_banner_html, content, count=1)
-            with open(fpath, "w", encoding="utf-8") as fp:
-                fp.write(updated)
+        # Remove any previous banners or injected scripts
+        content = re.sub(
+            r'(\s*<style id="aima-top-nav-style">.*?</style>)?\s*(<script id="aima-top-nav-script">.*?</script>)?\s*<div id="aima-top-nav".*?</div>\s*',
+            '',
+            content,
+            flags=re.DOTALL
+        )
+        content = re.sub(r'<script id="aima-standalone-helper">.*?</script>\s*', '', content, flags=re.DOTALL)
+        
+        helper_script = f"""<script id="aima-standalone-helper">
+  if (window.self === window.top) {{
+    window.addEventListener('DOMContentLoaded', function() {{
+      var b = document.createElement('a');
+      b.href = 'index.html#{ch["filename"]}';
+      b.target = '_top';
+      b.style.cssText = 'position:fixed;bottom:22px;left:22px;background:#24344d;color:#fff;padding:9px 16px;border-radius:24px;box-shadow:0 6px 18px rgba(0,0,0,.25);text-decoration:none;font-size:13px;font-family:Tahoma,sans-serif;z-index:99999;display:inline-flex;align-items:center;gap:6px;transition:transform .2s;border:1px solid rgba(255,255,255,.2);';
+      b.innerHTML = '📖 باز کردن در کتابخوان با سایدبار';
+      b.onmouseover = function() {{ b.style.transform = 'translateY(-2px)'; }};
+      b.onmouseout = function() {{ b.style.transform = 'none'; }};
+      document.body.appendChild(b);
+    }});
+  }}
+</script>
+"""
+        # Append before </body>
+        if "</body>" in content:
+            updated = content.replace("</body>", helper_script + "</body>")
+        else:
+            updated = content + helper_script
+            
+        with open(fpath, "w", encoding="utf-8") as fp:
+            fp.write(updated)
 
 
 def main():
