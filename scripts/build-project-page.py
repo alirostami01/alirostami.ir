@@ -42,6 +42,7 @@ CHAPTERS_TABLE = [
 ]
 
 GITHUB_REPO = "https://github.com/alirostami01/Fundamentals-of-Software-Architecture_-A-Modern-Engineering-Approach"
+GITHUB_PDF = f"{GITHUB_REPO}/raw/main/pdf/book.pdf"
 
 def build_table_rows():
     rows = []
@@ -423,7 +424,7 @@ HTML_TEMPLATE = f"""<!DOCTYPE html>
         </div>
         <div class="docs-actions">
             <a class="primary" href="/software-architecture/"><i class="fas fa-book-reader fa-fw" aria-hidden="true"></i> مطالعهٔ آنلاین کتاب (با سایدبار)</a>
-            <a class="primary" href="/software-architecture/fundamentals-of-software-architecture-persian.pdf" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-pdf fa-fw" aria-hidden="true"></i> دانلود کامل کتاب (PDF ۶۵۰ ص)</a>
+            <a class="primary" href="{GITHUB_PDF}" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-pdf fa-fw" aria-hidden="true"></i> دانلود کامل کتاب از گیت‌هاب (PDF)</a>
             <a class="accent-red" href="/support/"><i class="fas fa-heart fa-fw" aria-hidden="true"></i> حمایت مالی از پروژه</a>
             <a class="" href="{GITHUB_REPO}" target="_blank" rel="noopener noreferrer"><i class="fab fa-github fa-fw" aria-hidden="true"></i> مخزن گیت‌هاب پروژه</a>
             <a class="" href="{GITHUB_REPO}/tree/main/markdown" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-code fa-fw" aria-hidden="true"></i> متن فصل‌ها در Markdown</a>
@@ -484,7 +485,7 @@ HTML_TEMPLATE = f"""<!DOCTYPE html>
 
 <h2 id="فهرست-فصلها">📖 فهرست فصل‌ها و لینک‌های مطالعه<a class="headerlink" href="#فهرست-فصلها" title="Permanent link">#</a></h2>
 <blockquote>
-<p>📥 <strong>دانلود مستقیم فایل PDF کل کتاب:</strong> <a href="/software-architecture/fundamentals-of-software-architecture-persian.pdf">fundamentals-of-software-architecture-persian.pdf</a> (۶۵۰ صفحه — ۳۸ مگابایت)<br>
+<p>📥 <strong>دانلود نسخهٔ کامل کتاب (PDF از گیت‌هاب):</strong> <a href="{GITHUB_PDF}" target="_blank" rel="noopener noreferrer">book.pdf</a> (۶۵۰ صفحه — ۳۸ مگابایت)<br>
 🌐 <strong>مطالعه در سامانه کتابخوان آنلاین:</strong> <a href="/software-architecture/">ورود به کتابخوان معماری نرم‌افزار</a></p>
 </blockquote>
 
