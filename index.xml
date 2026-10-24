@@ -3,9 +3,17 @@
         <title>Ali Rostami Website</title>
         <link>http://alirostami.com/</link>
         <description>This is my personal website</description>
-        <generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Everything is mine</copyright><lastBuildDate>Tue, 20 Oct 2026 12:00:00 &#43;0330</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Everything is mine</copyright><lastBuildDate>Sat, 24 Oct 2026 12:00:00 &#43;0330</lastBuildDate>
             <atom:link href="http://alirostami.com/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>مبانی معماری نرم‌افزار: رویکردی مهندسی و مدرن — ترجمهٔ فارسی</title>
+    <link>http://alirostami.com/fundamentals-of-software-architecture-persian/</link>
+    <pubDate>Sat, 24 Oct 2026 12:00:00 &#43;0330</pubDate>
+    <author>Ali Rostami</author>
+    <guid>http://alirostami.com/fundamentals-of-software-architecture-persian/</guid>
+    <description><![CDATA[ترجمه و آماده‌سازی فارسی ویرایش دوم کتاب مبانی معماری نرم‌افزار اثر مارک ریچاردز و نیل فورد (۲۰۲۵)؛ شامل ۲۷ فصل کامل، پیوست پرسش‌های بحث، ۲۴۱ شکل، نسخه یکپارچه PDF (۶۵۰ صفحه) و سامانهٔ مطالعهٔ آنلاین با سایدبار هوشمند.]]></description>
+</item>
+<item>
     <title>هوش مصنوعی: یک رویکرد مدرن — ترجمهٔ فارسی (AIMA 4e)</title>
     <link>http://alirostami.com/aima-4e-persian/</link>
     <pubDate>Tue, 20 Oct 2026 12:00:00 &#43;0330</pubDate>
